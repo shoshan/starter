@@ -6,3 +6,18 @@
 --
 -- Or remove existing autocmds by their group name (which is prefixed with `lazyvim_` for the defaults)
 -- e.g. vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
+vim.api.nvim_create_autocmd("BufWritePre", {
+  pattern = "*",
+  callback = function()
+    local success, err = pcall(function()
+      require("usr.git").format_modified_lines()
+    end)
+
+    -- Log error to a file if it occurs
+    if not success then
+      vim.notify("formatting error" .. err, vim.log.levels.ERROR)
+    else
+      vim.notify("Formatted modified lines", vim.log.levels.INFO)
+    end
+  end,
+})
