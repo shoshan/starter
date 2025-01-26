@@ -16,8 +16,6 @@ vim.api.nvim_create_autocmd("BufWritePre", {
     -- Log error to a file if it occurs
     if not success then
       vim.notify("formatting error" .. err, vim.log.levels.ERROR)
-    else
-      vim.notify("Formatted modified lines", vim.log.levels.INFO)
     end
   end,
 })
