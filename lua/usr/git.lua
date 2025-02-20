@@ -31,15 +31,12 @@ function M.lint_modified_lines()
   if not ranges then
     return
   end
+  vim.lsp.buf.lint({
+    formatting_options = {
+      ranges = ranges,  -- Pass all ranges at once to Ruff
+    },
+  })
 
-  for _, range in ipairs(ranges) do
-    vim.lsp.buf.lint({
-      range = {
-        ["start"] = { range[1], 0 }, -- Start at the beginning of the line
-        ["end"] = { range[2], 0 }, -- End at the beginning of the next line
-      },
-    })
-  end
 end
 
 -- Function to format only modified lines
