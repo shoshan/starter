@@ -1,3 +1,7 @@
+-- refs
+--https://github.com/lahoising/init.lua/blob/170b714f14c2b075b7ef941650f436ed969f994b/src/lua/format-modifications.lua#L18
+
+
 local M = {}
 
 -- Get modified lines from Git using gitsigns
@@ -6,7 +10,6 @@ local function get_git_modified_ranges()
   local hunks = gitsigns.get_hunks()
 
   if not hunks then
-    vim.notify("No changes detected", vim.log.levels.INFO)
     return nil
   end
 
@@ -20,6 +23,7 @@ local function get_git_modified_ranges()
 
   return ranges
 end
+
 
 -- Function to lint only modified lines
 function M.lint_modified_lines()
@@ -45,14 +49,10 @@ function M.format_modified_lines()
     return
   end
 
-  for _, range in ipairs(ranges) do
-    vim.lsp.buf.format({
-      range = {
-        ["start"] = { range[1], 0 },
-        ["end"] = { range[2], 0 },
-      },
-    })
-  end
+  vim.lsp.buf.format({
+    formatting_options = {
+      ranges = ranges,  -- Pass all ranges at once to Ruff
+    },
+  })
 end
-
 return M
