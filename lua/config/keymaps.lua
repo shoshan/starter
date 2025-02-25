@@ -11,5 +11,5 @@ local del = vim.keymap.del
 --     ╰───────────────────────────────────────────────────────────────────╯
 del("n", "<leader>L")
 del("n", "<leader>l")
--- del("n", "<leader>z")
 
+map("n", "<leader>rn", vim.lsp.buf.rename, { desc = "LSP: Rename" })
