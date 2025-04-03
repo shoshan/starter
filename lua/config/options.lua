@@ -9,17 +9,37 @@
 -- Set to "ruff_lsp" to use the old LSP implementation version.
 vim.g.lazyvim_python_ruff = "ruff"
 
--- wayland paste no new line
-if vim.fn.has("unix") == 1 and vim.env.WAYLAND_DISPLAY then
-  vim.g.clipboard = {
-    name = "wl-clipboard",
-    copy = {
-      ["+"] = "wl-copy",
-      ["*"] = "wl-copy",
-    },
-    paste = {
-      ["+"] = "wl-paste --no-newline",
-      ["*"] = "wl-paste --no-newline",
-    },
-  }
+-- Clipboard configuration for X11 and Wayland
+if vim.fn.has("unix") == 1 then
+  if vim.env.WAYLAND_DISPLAY then
+    -- Wayland clipboard configuration
+    vim.g.clipboard = {
+      name = "wl-clipboard",
+      copy = {
+        ["+"] = "wl-copy",
+        ["*"] = "wl-copy --primary",
+      },
+      paste = {
+        ["+"] = "wl-paste --no-newline",
+        ["*"] = "wl-paste --primary --no-newline",
+      },
+      cache_enabled = 0,
+    }
+  elseif vim.env.DISPLAY then
+    -- X11 clipboard configuration
+    vim.g.clipboard = {
+      name = "xclip-clipboard",
+      copy = {
+        ["+"] = "xsel --clipboard --input",
+        ["*"] = "xsel --primary --input",      },
+      paste = {
+        ["+"] = "xsel --clipboard --output",
+        ["*"] = "xsel --primary --output",
+            },
+      cache_enabled = 0,
+    }
+  -- Ensure middle mouse works by syncing yanks to primary
+  vim.opt.clipboard = "unnamed"  -- Sync default yanks to *
+  vim.notify("Clipboard set to xsel for X11 with unnamed sync", vim.log.levels.INFO, { title = "Clipboard Config" })
+  end
 end
