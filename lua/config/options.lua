@@ -39,7 +39,7 @@ if vim.fn.has("unix") == 1 then
       cache_enabled = 0,
     }
   -- Ensure middle mouse works by syncing yanks to primary
-  vim.opt.clipboard = "unnamed"  -- Sync default yanks to *
+  vim.opt.clipboard:append("unnamed")
   vim.notify("Clipboard set to xsel for X11 with unnamed sync", vim.log.levels.INFO, { title = "Clipboard Config" })
   end
 end
