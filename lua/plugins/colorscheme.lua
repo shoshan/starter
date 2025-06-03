@@ -15,10 +15,13 @@ return {
       -- Function to set comment highlight based on mode
       local function set_comment_highlight()
         local mode = vim.fn.mode()
+        if mode == "i" then
+          vim.api.nvim_set_hl(0, "Normal", { bg = "#202020" })
+          --vim.api.nvim_set_hl(0, "@comment", { bg = "#004d00" }) -- Deep green for normal mode
+        end
         if mode == "n" then
-          vim.api.nvim_set_hl(0, "@comment", { bg = "#004d00" }) -- Deep green for normal mode
-        else
-          vim.api.nvim_set_hl(0, "@comment", { bg = "#1e1e1e" }) -- Default for other modes
+          vim.api.nvim_set_hl(0, "Normal", { bg = "#282828" })
+          --vim.api.nvim_set_hl(0, "@comment", { bg = "#1e1e1e" }) -- Default for other modes
         end
       end
 
