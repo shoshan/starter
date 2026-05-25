@@ -26,10 +26,16 @@ return {
       opts.setup = opts.setup or {}
       -- Setup on_attach for the `ruff` LSP server
       opts.setup[ruff] = function()
-        LazyVim.lsp.on_attach(function(client, _)
-          -- Disable hover in favor of Pyright
-          client.server_capabilities.hoverProvider = false
-        end) -- Close the function here without passing `ruff`
+        vim.api.nvim_create_autocmd("LspAttach", {
+          callback = function(args)
+            local client = vim.lsp.get_client_by_id(args.data.client_id)
+            if not client or client.name ~= ruff then
+              return
+            end
+            -- Disable hover in favor of Pyright
+            client.server_capabilities.hoverProvider = false
+          end,
+        })
       end
     end,
   },
