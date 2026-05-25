@@ -15,6 +15,14 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
+  -- workaround for forcing nvim to ask for credentials when cloning private repositories
+  --git = {
+  --  url_format = "https://github.com/%s.git",
+  --  env = {
+  --    GIT_TERMINAL_PROMPT = "1",
+  --    GIT_ASKPASS = "echo",
+  --  },
+  --},
   spec = {
     -- add LazyVim and import its plugins
     { "LazyVim/LazyVim", import = "lazyvim.plugins" },

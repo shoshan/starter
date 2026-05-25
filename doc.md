@@ -3,6 +3,7 @@
 
 ## Overview
 This repository contains a Neovim configuration based on LazyVim and custom plugin settings. The config focuses on:
+-  ai gemini connector avante
 - Python LSP integration with `pyright` and `ruff`
 - Clipboard support for Wayland and X11
 - Custom colorscheme loading and highlight tweaks

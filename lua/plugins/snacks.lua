@@ -1,3 +1,3 @@
 return {
-  { "gcmt/snacks.nvim" },
+  { "folke/snacks.nvim" },
 }
