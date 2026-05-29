@@ -227,4 +227,4 @@ vim.api.nvim_create_user_command("DumpHotkeys", function()
   vim.notify("Dumped " .. (#lines - 2) .. " keymaps → /tmp/hotkeys.txt", vim.log.levels.INFO)
 end, { desc = "Dump all keymaps to /tmp/hotkeys.txt" })
 
-map("n", "<leader>hk", "<cmd>DumpHotkeys<cr>", { desc = "Dump all hotkeys to file" })
+map("n", "<leader>Dk", "<cmd>DumpHotkeys<cr>", { desc = "Dump all hotkeys to file" })
