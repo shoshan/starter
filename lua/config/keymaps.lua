@@ -11,8 +11,6 @@ local del = vim.keymap.del
 --     ╰───────────────────────────────────────────────────────────────────╯
 del("n", "<leader>L")
 del("n", "<leader>l")
-
-map("n", "<leader>rn", vim.lsp.buf.rename, { desc = "LSP: Rename" })
 vim.api.nvim_create_user_command("DumpHotkeys", function()
   local raw = {}
   local leader = vim.g.mapleader or "\\"
@@ -20,6 +18,7 @@ vim.api.nvim_create_user_command("DumpHotkeys", function()
   local COL_PKG = 20
   local COL_DESC = 45
   local COL_KEY = 25
+  local COL_TRIGGER = 10
 
   local function truncate(s, len)
     if #s > len then
@@ -37,6 +36,16 @@ vim.api.nvim_create_user_command("DumpHotkeys", function()
       humps = humps + 1
     end
     return humps >= 2
+  end
+
+  local function extract_trigger(lhs)
+    -- lhs already has <leader> replaced with actual leader char
+    -- Get the very first character or token
+    local first = lhs:match("^<[^>]+>") or lhs:sub(1, 1)
+    if first == " " or first == leader then
+      return "<leader>"
+    end
+    return first
   end
 
   -- Build lookup from lazy registry
@@ -93,7 +102,6 @@ vim.api.nvim_create_user_command("DumpHotkeys", function()
         goto continue
       end
 
-      -- Skip <Plug> internal wiring
       if lhs:match("^<[Pp]lug>") then
         goto continue
       end
@@ -101,17 +109,17 @@ vim.api.nvim_create_user_command("DumpHotkeys", function()
       local raw_desc = k.desc or k.rhs or "<lua>"
       local desc = clean_desc(raw_desc)
 
-      -- Skip internal CamelCase names (e.g. MatchitNormalBackward, AvanteToggleDebug)
       if is_internal_name(desc) then
         goto continue
       end
 
       local package = resolve_package(lhs, raw_desc)
       local display_lhs = lhs:gsub("<[Ll]eader>", leader)
+      local trigger = extract_trigger(display_lhs)
 
       local key = lhs .. "||" .. raw_desc
       if not raw[key] then
-        raw[key] = { lhs = display_lhs, desc = desc, package = package, modes = {} }
+        raw[key] = { lhs = display_lhs, desc = desc, package = package, trigger = trigger, modes = {} }
       end
       local seen = false
       for _, m in ipairs(raw[key].modes) do
@@ -135,10 +143,11 @@ vim.api.nvim_create_user_command("DumpHotkeys", function()
     table.insert(
       lines,
       string.format(
-        "%-" .. COL_PKG .. "s  %-" .. COL_DESC .. "s  %-" .. COL_KEY .. "s  %s",
+        "%-" .. COL_PKG .. "s  %-" .. COL_DESC .. "s  %-" .. COL_KEY .. "s  %-" .. COL_TRIGGER .. "s  %s",
         truncate(entry.package, COL_PKG),
         truncate(entry.desc, COL_DESC),
         truncate(entry.lhs, COL_KEY),
+        entry.trigger,
         modes
       )
     )
@@ -149,13 +158,14 @@ vim.api.nvim_create_user_command("DumpHotkeys", function()
   end)
 
   local header = string.format(
-    "%-" .. COL_PKG .. "s  %-" .. COL_DESC .. "s  %-" .. COL_KEY .. "s  %s",
+    "%-" .. COL_PKG .. "s  %-" .. COL_DESC .. "s  %-" .. COL_KEY .. "s  %-" .. COL_TRIGGER .. "s  %s",
     "PACKAGE",
     "DESCRIPTION",
     "KEY",
+    "TRIGGER",
     "MODES"
   )
-  local divider = string.rep("-", COL_PKG + COL_DESC + COL_KEY + 12)
+  local divider = string.rep("-", COL_PKG + COL_DESC + COL_KEY + COL_TRIGGER + 14)
   table.insert(lines, 1, divider)
   table.insert(lines, 1, header)
 
