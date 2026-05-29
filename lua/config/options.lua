@@ -31,18 +31,18 @@ if vim.fn.has("unix") == 1 then
       name = "xclip-clipboard",
       copy = {
         ["+"] = "xsel --clipboard --input",
-        ["*"] = "xsel --primary --input",      },
+        ["*"] = "xsel --primary --input",
+      },
       paste = {
         ["+"] = "xsel --clipboard --output",
         ["*"] = "xsel --primary --output",
-            },
+      },
       cache_enabled = 0,
     }
-  -- Ensure middle mouse works by syncing yanks to primary
-  vim.opt.clipboard:append("unnamed")
+    -- Ensure middle mouse works by syncing yanks to primary
+    vim.opt.clipboard:append("unnamed")
 
-  -- not adding noise 
-  --vim.notify("Clipboard set to xsel for X11 with unnamed sync", vim.log.levels.INFO, { title = "Clipboard Config" })
-
+    -- not adding noise
+    --vim.notify("Clipboard set to xsel for X11 with unnamed sync", vim.log.levels.INFO, { title = "Clipboard Config" })
   end
 end
